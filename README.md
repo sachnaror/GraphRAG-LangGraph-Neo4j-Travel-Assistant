@@ -67,6 +67,13 @@ https://mocki.io/v1/your-endpoint-id
 - Stronger LLM explanations
 - Realistic demo
 
+## 💡 Benefits of having this architecture
+
+- separation of concerns
+- agent orchestration
+- hybrid retrieval
+- reasoning layer
+
 ## 🧑‍💻 Author
 
 
