@@ -1,0 +1,10 @@
+{
+  "routes": [
+    {
+      "avg_duration": 130,
+      "distance_km": 1150,
+      "from": "Delhi",
+      "to": "Mumbai"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "flights": [
+    {
+      "aircraft": "Airbus A320",
+      "airline": "Air India",
+      "amenities": [
+        "WiFi",
+        "Meal",
+        "USB Charging"
+      ],
+      "arrival_time": "2026-06-01T10:10:00",
+      "available_seats": {
+        "Business": 5,
+        "Economy": 25
+      },
+      "baggage": {
+        "cabin": "7kg",
+        "check_in": "15kg"
+      },
+      "cancellation_probability": 0.03,
+      "carbon_emission_kg": 120,
+      "currency": "INR",
+      "demand_score": 0.78,
+      "departure_time": "2026-06-01T08:00:00",
+      "duration_minutes": 130,
+      "dynamic_pricing_factor": 1.1,
+      "fare_rules": {
+        "change_fee": 1500,
+        "refundable": false
+      },
+      "flight_no": "AI101",
+      "from": "Delhi",
+      "is_direct": true,
+      "layovers": [],
+      "on_time_performance": 0.92,
+      "price": 5500,
+      "rating": 4.2,
+      "reviews_count": 1240,
+      "seat_class": [
+        "Economy",
+        "Business"
+      ],
+      "tags": [
+        "fastest",
+        "popular",
+        "morning"
+      ],
+      "to": "Mumbai"
+    }
+  ]
+}

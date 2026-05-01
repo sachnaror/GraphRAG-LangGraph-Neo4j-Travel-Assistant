@@ -1,0 +1,12 @@
+{
+  "airports": [
+    {
+      "city": "Delhi",
+      "code": "DEL",
+      "country": "India",
+      "lat": 28.5562,
+      "lon": 77.1,
+      "timezone": "IST"
+    }
+  ]
+}

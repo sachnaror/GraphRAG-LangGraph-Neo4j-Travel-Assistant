@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "budget_range": [
+        4000,
+        8000
+      ],
+      "preferred_airlines": [
+        "Air India"
+      ],
+      "seat_preference": "Window",
+      "travel_type": "Business",
+      "user_id": "U1"
+    }
+  ]
+}
