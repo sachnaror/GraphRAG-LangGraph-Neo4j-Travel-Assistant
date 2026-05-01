@@ -7,7 +7,8 @@ An intelligent travel assistant combining GraphRAG, Neo4j, LangGraph agents, and
 User query → Agents → Neo4j (graph data) + Mock APIs (RAG) → Reasoning → Ranking → LLM → Response
 
 ## 📁 Project Structure
-(Refer to full structure in project setup)
+
+I will add this shortly after completion and running it successfuly on local
 
 ## 🌐 Mock API Setup (Using Mocki)
 1. Go to https://mocki.io/
