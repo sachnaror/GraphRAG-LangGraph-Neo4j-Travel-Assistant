@@ -19,6 +19,8 @@ Example:
 https://mocki.io/v1/your-endpoint-id
 
 ## 🧪 Sample Flight JSON
+
+```
 {
   "flight_no": "AI101",
   "airline": "Air India",
@@ -55,6 +57,8 @@ https://mocki.io/v1/your-endpoint-id
   "demand_score": 0.78,
   "tags": ["fastest", "popular", "morning"]
 }
+
+```
 
 ## 💡 Why Rich Data Matters
 - Better graph reasoning
