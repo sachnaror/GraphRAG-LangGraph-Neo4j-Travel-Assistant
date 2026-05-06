@@ -207,6 +207,40 @@ API request
 
 ---
 
+## What This Application Does
+
+1. This is an agentic travel assistant that plans trips through a GraphRAG-style workflow combining graph route discovery, persisted FAISS-based document retrieval, validation, scoring, comparison, and LLM-generated explanation.  
+   Files: `app/workflows/graph_rag_flow.py`, `app/workflows/travel_workflow.py`
+
+2. The FastAPI endpoint `/plan-trip` accepts a structured travel request such as origin, destination, priority, seat class, refundable-only preference, and optional session metadata, then routes it into the orchestration workflow.  
+   Files: `app/api/routes_travel.py`, `app/schemas/travel.py`
+
+3. A graph agent finds direct and one-layover flight options using Neo4j when configured and available, with local JSON-backed graph data used as a fallback path for development and offline execution.  
+   Files: `app/agents/graph_agent.py`, `app/graph/neo4j_client.py`, `app/graph/queries.py`, `data/graph_data/flights.json`
+
+4. A RAG agent retrieves relevant travel rules, airline policies, and pricing notes using local hashing embeddings plus a persisted FAISS index stored under `data/embeddings/faiss_index`; if the saved index is missing, the retriever can fall back to rebuilding from `data/documents`.  
+   Files: `app/agents/rag_agent.py`, `app/retrieval/retriever.py`, `app/retrieval/vector_store.py`, `app/retrieval/embeddings.py`, `scripts/build_faiss_index.py`
+
+5. A planner agent enriches route options using the user request, inferred travel priority, and retrieved policy/context snippets so the downstream ranking and explanation stages have a fuller decision context.  
+   Files: `app/agents/planner_agent.py`, `data/api_mock/users.json`
+
+6. A validator agent filters out flight options that violate hard constraints such as missing seat class, insufficient seat availability, or refundable-only requirements.  
+   Files: `app/agents/validator_agent.py`, `app/services/validation_service.py`
+
+7. A scoring service ranks valid flight options using factors like price, duration, airline rating, and on-time performance, weighted according to the traveler's stated priority such as `price`, `time`, or `business`.  
+   Files: `app/services/scoring_service.py`
+
+8. A comparison service assigns human-readable labels such as `Best Overall`, `Cheapest`, `Fastest`, and `Best Rated` so alternatives can be interpreted quickly.  
+   Files: `app/services/comparison_service.py`
+
+9. OpenAI is used, when configured, to generate a natural-language explanation for why the top-ranked option was selected; if the API key is absent or the call fails, the system falls back to a local mock explanation path.  
+   Files: `app/llm/client.py`, `app/llm/prompts.py`, `app/mocks/mock_llm.py`, `.env`
+
+10. The system is implemented as a full local prototype with graph ingestion, agent orchestration, persisted FAISS index building/loading, workflow execution, observability metrics, tests, and development fallbacks for both graph and LLM layers.  
+   Files: `scripts/ingest_graph.py`, `scripts/build_faiss_index.py`, `app/agents/orchestrator.py`, `app/observability/metrics.py`, `tests/test_services.py`, `tests/test_agents.py`, `tests/test_retrieval.py`
+
+---
+
 ## Execution Flow
 
 ```text
