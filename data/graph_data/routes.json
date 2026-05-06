@@ -1,0 +1,46 @@
+{
+  "routes": [
+    {
+      "from": "Delhi",
+      "to": "Mumbai",
+      "distance_km": 1150,
+      "avg_duration": 130,
+      "popularity_score": 0.9
+    },
+    {
+      "from": "Delhi",
+      "to": "Bangalore",
+      "distance_km": 1750,
+      "avg_duration": 160,
+      "popularity_score": 0.85
+    },
+    {
+      "from": "Bangalore",
+      "to": "Mumbai",
+      "distance_km": 980,
+      "avg_duration": 120,
+      "popularity_score": 0.8
+    },
+    {
+      "from": "Delhi",
+      "to": "Hyderabad",
+      "distance_km": 1250,
+      "avg_duration": 140,
+      "popularity_score": 0.75
+    },
+    {
+      "from": "Mumbai",
+      "to": "Chennai",
+      "distance_km": 1330,
+      "avg_duration": 150,
+      "popularity_score": 0.7
+    },
+    {
+      "from": "Chennai",
+      "to": "Delhi",
+      "distance_km": 1750,
+      "avg_duration": 170,
+      "popularity_score": 0.65
+    }
+  ]
+}

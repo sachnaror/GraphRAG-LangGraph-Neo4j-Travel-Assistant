@@ -1,1 +1,52 @@
-{}
+{
+  "airports": [
+    {
+      "code": "DEL",
+      "city": "Delhi",
+      "country": "India",
+      "timezone": "IST",
+      "lat": 28.5562,
+      "lon": 77.1000
+    },
+    {
+      "code": "BOM",
+      "city": "Mumbai",
+      "country": "India",
+      "timezone": "IST",
+      "lat": 19.0896,
+      "lon": 72.8656
+    },
+    {
+      "code": "BLR",
+      "city": "Bangalore",
+      "country": "India",
+      "timezone": "IST",
+      "lat": 13.1986,
+      "lon": 77.7066
+    },
+    {
+      "code": "HYD",
+      "city": "Hyderabad",
+      "country": "India",
+      "timezone": "IST",
+      "lat": 17.2403,
+      "lon": 78.4294
+    },
+    {
+      "code": "MAA",
+      "city": "Chennai",
+      "country": "India",
+      "timezone": "IST",
+      "lat": 12.9941,
+      "lon": 80.1709
+    },
+    {
+      "code": "CCU",
+      "city": "Kolkata",
+      "country": "India",
+      "timezone": "IST",
+      "lat": 22.6547,
+      "lon": 88.4467
+    }
+  ]
+}

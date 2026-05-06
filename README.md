@@ -10,69 +10,204 @@ User query → Agents → Neo4j (graph data) + Mock APIs (RAG) → Reasoning →
 
 I will add this shortly after completion and running it successfuly on local
 
-## 🌐 Mock API Setup (Using Mocki)
-1. Go to https://mocki.io/
-2. Paste JSON
-3. Generate endpoint
-4. Use in code
+# GraphRAG-LangGraph-Neo4j-Travel-Assistant
 
-Example:
-https://mocki.io/v1/your-endpoint-id
+## 🚀 Overview
+An intelligent travel decision engine built using:
+- GraphRAG (Graph + Retrieval Augmented Generation)
+- Neo4j (relationship graph)
+- LangGraph agents (orchestration)
+- LLM (reasoning + explanation)
 
-## 🧪 Sample Flight JSON
+It does not just search flights — it **reasons, ranks, validates, and explains decisions**.
+
+---
+
+## 🧠 What It Does
+- Multi-hop reasoning (direct + layover routes)
+- Constraint validation (baggage, seats, refund)
+- Dynamic scoring (price, time, rating)
+- Graph-based personalization (user preferences)
+- LLM-based explanation (“Why this flight is best”)
+- Fallback system (mock data if API/DB fails)
+
+---
+
+## 📁 Directory Structure & Execution Flow
 
 ```
+main.py (1)
+→ routes_travel.py (2)
+→ travel_service.py (3)
+→ graph_agent (4)
+→ rag_agent (5)
+→ planner_agent (6)
+→ validator_agent (7)
+→ scoring_service (8)
+→ comparison_service (9)
+→ llm (10)
+→ schema response (11)
+```
+
+---
+
+## 🏗️ Architecture Diagram
+
+User → API → Service → Agents → Data (Neo4j + RAG)
+→ Validation → Scoring → LLM → Response
+
+---
+
+## 🔄 Runtime Flow
+
+1. User sends request
+2. FastAPI receives request
+3. travel_service orchestrates flow
+4. graph_agent fetches Neo4j data (fallback to mock if needed)
+5. rag_agent fetches external/docs
+6. planner_agent builds options
+7. validator filters invalid
+8. scoring ranks options
+9. comparison builds alternatives
+10. LLM explains result
+11. Response returned
+
+---
+
+## 🔁 Fallback Logic
+
+If Neo4j fails:
+→ use mock_external_api (data/api_mock)
+
+If API fails:
+→ use local JSON
+
+---
+
+## 📊 Data Sources
+
+| Source | Usage |
+|------|------|
+| graph_data | Neo4j ingestion |
+| api_mock | runtime fallback |
+| documents | RAG knowledge |
+
+---
+
+## 🧪 Sample API Response
+
+```json
 {
-  "flight_no": "AI101",
-  "airline": "Air India",
+  "best_flight": {
+    "flight_no": "FL101",
+    "from_city": "Delhi",
+    "to_city": "Mumbai",
+    "price": 5500,
+    "duration_minutes": 130,
+    "rating": 4.2,
+    "on_time_performance": 0.92
+  },
+  "alternatives": [
+    {
+      "flight_no": "FL105",
+      "from_city": "Delhi",
+      "to_city": "Mumbai",
+      "price": 4800,
+      "duration_minutes": 180,
+      "rating": 3.9
+    }
+  ],
+  "comparison": [
+    {
+      "flight_no": "FL101",
+      "price": 5500,
+      "duration_minutes": 130,
+      "rating": 4.2,
+      "score": 0.82,
+      "highlight": "Best Overall"
+    }
+  ],
+  "explanation": "This flight is best due to balance of speed, cost, and reliability."
+}
+```
+
+---
+
+## 🤖 “Why this flight is best” (LLM Output Example)
+
+```
+We selected flight FL101 because it offers the best balance between travel time, cost, and reliability.
+
+- Short duration (130 mins)
+- High on-time performance (92%)
+- Competitive pricing
+
+This makes it ideal for business travel.
+```
+
+---
+
+## 📡 cURL Request Example
+
+```bash
+curl -X POST "http://127.0.0.1:8000/plan-trip" \
+-H "Content-Type: application/json" \
+-d '{
   "from": "Delhi",
   "to": "Mumbai",
-  "departure_time": "2026-06-01T08:00:00",
-  "arrival_time": "2026-06-01T10:10:00",
-  "duration_minutes": 130,
-  "price": 5500,
-  "currency": "INR",
-  "aircraft": "Airbus A320",
-  "seat_class": ["Economy", "Business"],
-  "available_seats": {
-    "Economy": 25,
-    "Business": 5
-  },
-  "baggage": {
-    "cabin": "7kg",
-    "check_in": "15kg"
-  },
-  "on_time_performance": 0.92,
-  "cancellation_probability": 0.03,
-  "rating": 4.2,
-  "reviews_count": 1240,
-  "amenities": ["WiFi", "Meal", "USB Charging"],
-  "layovers": [],
-  "is_direct": true,
-  "carbon_emission_kg": 120,
-  "fare_rules": {
-    "refundable": false,
-    "change_fee": 1500
-  },
-  "dynamic_pricing_factor": 1.1,
-  "demand_score": 0.78,
-  "tags": ["fastest", "popular", "morning"]
-}
-
+  "user_id": "U1",
+  "priority": "time"
+}'
 ```
 
-## 💡 Why Rich Data Matters
-- Better graph reasoning
-- Smarter ranking
-- Stronger LLM explanations
-- Realistic demo
+---
 
-## 💡 Benefits of having this architecture
+## 🖥️ Sample Terminal Output
 
-- separation of concerns
-- agent orchestration
-- hybrid retrieval
-- reasoning layer
+```
+Query: Delhi → Mumbai
+
+Best Flight: FL101
+Price: 5500
+Duration: 130 mins
+
+Explanation:
+Best balance of speed and reliability.
+```
+
+---
+
+## ⚙️ How to Run
+
+```bash
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+---
+
+## 🧪 Demo Script
+
+```bash
+python scripts/run_demo_queries.py
+```
+
+---
+
+## 🎯 Final Summary
+
+This system:
+- Thinks (agents)
+- Retrieves (RAG)
+- Reasons (graph)
+- Decides (scoring)
+- Explains (LLM)
+
+Unlike traditional systems, it answers **WHY**, not just **WHAT**.
+
+---
+
+
 
 ## 🧑‍💻 Author
 

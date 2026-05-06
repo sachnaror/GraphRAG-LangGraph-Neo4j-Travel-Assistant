@@ -1,16 +1,34 @@
 {
   "users": [
     {
-      "budget_range": [
-        4000,
-        8000
-      ],
-      "preferred_airlines": [
-        "Air India"
-      ],
-      "seat_preference": "Window",
+      "user_id": "U1",
+      "name": "Sachin",
       "travel_type": "Business",
-      "user_id": "U1"
+      "budget_sensitive": false,
+      "preferred_airlines": ["Air India", "Vistara"],
+      "seat_preference": "Window",
+      "priority": "time",
+      "loyalty_member": true
+    },
+    {
+      "user_id": "U2",
+      "name": "Rahul",
+      "travel_type": "Leisure",
+      "budget_sensitive": true,
+      "preferred_airlines": ["IndiGo"],
+      "seat_preference": "Aisle",
+      "priority": "price",
+      "loyalty_member": false
+    },
+    {
+      "user_id": "U3",
+      "name": "Priya",
+      "travel_type": "Family",
+      "budget_sensitive": true,
+      "preferred_airlines": ["Akasa Air"],
+      "seat_preference": "Middle",
+      "priority": "comfort",
+      "loyalty_member": false
     }
   ]
 }
