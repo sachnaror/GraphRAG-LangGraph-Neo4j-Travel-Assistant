@@ -18,6 +18,9 @@ class Settings:
     neo4j_uri: str | None
     neo4j_username: str | None
     neo4j_password: str | None
+    retrieval_documents_dir: str | None
+    retrieval_index_dir: str | None
+    retrieval_build_on_startup: bool
 
 
 @lru_cache
@@ -31,4 +34,7 @@ def get_settings() -> Settings:
         neo4j_uri=os.getenv("NEO4J_URI"),
         neo4j_username=os.getenv("NEO4J_USERNAME"),
         neo4j_password=os.getenv("NEO4J_PASSWORD"),
+        retrieval_documents_dir=os.getenv("RETRIEVAL_DOCUMENTS_DIR"),
+        retrieval_index_dir=os.getenv("RETRIEVAL_INDEX_DIR"),
+        retrieval_build_on_startup=os.getenv("RETRIEVAL_BUILD_ON_STARTUP", "false").lower() == "true",
     )

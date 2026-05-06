@@ -13,3 +13,5 @@ venv/
 example.env
 *.pem
 *.key
+data/embeddings/faiss_index/*
+!data/embeddings/faiss_index/.gitkeep

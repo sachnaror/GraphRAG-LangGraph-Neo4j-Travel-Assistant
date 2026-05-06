@@ -2,7 +2,7 @@
 
 An intelligent travel decision engine that uses a GraphRAG-style flow to plan, rank, validate, compare, and explain flight options.
 
-The current local implementation runs as an agentic GraphRAG prototype with JSON-backed graph/mock data, local vector retrieval over travel documents, deterministic scoring, optional Neo4j graph ingestion, and an OpenAI explanation layer with mock fallback.
+The current local implementation runs as an agentic GraphRAG prototype with JSON-backed graph/mock data, FAISS-backed local vector retrieval over travel documents, deterministic scoring, optional Neo4j graph ingestion, and an OpenAI explanation layer with mock fallback.
 
 If `OPENAI_API_KEY` is available in the environment, the explanation layer uses OpenAI. If the key is missing or the API call fails, it falls back to the local mock explanation.
 
@@ -143,8 +143,8 @@ API request
 │   │   │   └── queries.py (9.1.3)               # Cypher queries for graph search/traversal
 │   │
 │   │   ├── retrieval/
-│   │   │   ├── retriever.py (9.2.1)             # Semantic retrieval pipeline
-│   │   │   ├── vector_store.py (9.2.2)          # FAISS/vector DB storage and search
+│   │   │   ├── retriever.py (9.2.1)             # Semantic retrieval pipeline with FAISS load/fallback
+│   │   │   ├── vector_store.py (9.2.2)          # FAISS index build, save, load, and search
 │   │   │   └── embeddings.py (9.2.3)            # Embedding generation logic
 │   │
 │   │   ├── caching/
@@ -164,6 +164,7 @@ API request
 │
 │   ├── scripts/
 │   │   ├── ingest_graph.py                      # Load JSON datasets into Neo4j
+│   │   ├── build_faiss_index.py                 # Build/rebuild the persisted FAISS retrieval index
 │   │   └── run_demo_queries.py                  # Run sample GraphRAG demo queries
 │
 │   ├── tests/                                   # Unit and integration tests
@@ -224,7 +225,7 @@ app/main.py
 | Mock API data | `data/api_mock` | Runtime fallback data for flights, routes, users, and airports |
 | Graph data | `data/graph_data` | Seed data intended for Neo4j ingestion |
 | Documents | `data/documents` | Local RAG-style context and policy notes |
-| Embeddings | `data/embeddings` | Reserved for vector index files |
+| Embeddings | `data/embeddings/faiss_index` | Persisted FAISS index files and chunk metadata |
 
 ---
 
@@ -306,6 +307,18 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
+Build or rebuild the local FAISS index:
+
+```bash
+python scripts/build_faiss_index.py
+```
+
+Optional custom paths:
+
+```bash
+python scripts/build_faiss_index.py --documents-dir data/documents --index-dir data/embeddings/faiss_index
+```
+
 Optional OpenAI setup:
 
 ```bash
@@ -321,9 +334,14 @@ APP_SECRET_KEY=your_local_secret_key
 NEO4J_URI=bolt://localhost:7687
 NEO4J_USERNAME=neo4j
 NEO4J_PASSWORD=your_neo4j_password
+RETRIEVAL_DOCUMENTS_DIR=
+RETRIEVAL_INDEX_DIR=
+RETRIEVAL_BUILD_ON_STARTUP=false
 ```
 
 `.env` is ignored by git. Keep real secrets only in `.env` or your local shell environment.
+
+At runtime, retrieval prefers the persisted FAISS index in `data/embeddings/faiss_index`. If the index files are missing, the app falls back to building the store from `data/documents`. If `RETRIEVAL_BUILD_ON_STARTUP=true`, that fallback build is also saved back to disk automatically.
 
 Optionally validate graph data before starting:
 
