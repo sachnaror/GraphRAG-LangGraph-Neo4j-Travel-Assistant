@@ -46,6 +46,38 @@ User Request
 Runtime data flow:
 
 ```text
+
+(1) main.py
+   ↓
+(2) API Routes
+   ↓
+(3) Pydantic Schemas
+   ↓
+(4) Services
+   ↓
+(5) Orchestrator
+   ↓
+(6) Workflow Engine
+   ↓
+(7) GraphRAG Flow
+   ↓
+(8) Validation Agent
+   ↓
+(9) Graph + RAG Retrieval
+   ↓
+(10) Planner Agent
+   ↓
+(11) Scoring Engine
+   ↓
+(12) Comparison Engine
+   ↓
+(13) LLM Layer
+   ↓
+(14) Session Memory
+```
+
+```text
+
 API request
   -> Neo4j route query or JSON graph/mock fallback
   -> local document retrieval
@@ -63,80 +95,222 @@ API request
 ```text
 
 ├── GraphRAG-LangGraph-Neo4j-Travel-Assistant/
-│   ├── example.env                              # Sample environment variables template
-│   ├── requirements.txt                         # Python package dependencies
-│   ├── README.md                                # Project documentation and setup guide
-│   ├── .env                                     # Actual local environment secrets/config
+│
+│   ├── README.md
+│   │   # Complete architecture, setup, execution flow, APIs, screenshots
+│
+│   ├── requirements.txt
+│   │   # Python dependencies
+│
+│   ├── .env
+│   │   # Real local secrets (never push to GitHub)
+│
+│   ├── .env.example
+│   │   # Sample environment variables template
+│
+│
 │   ├── app/
-│   │   ├── config.py (1.1)                      # Central application configuration loader
-│   │   ├── main.py (1)                          # FastAPI application entry point
-│   │   ├── mocks/
-│   │   │   ├── mock_llm.py (13.3)               # Fake/mock LLM responses for local testing
-│   │   │   └── mock_external_api.py (9.1.4)    # Mock flight/travel external APIs
-│   │   ├── llm/
-│   │   │   ├── client.py (13)                   # OpenAI/LLM client integration layer
-│   │   │   ├── output_parser.py (13.2)          # Parses and structures LLM responses
-│   │   │   └── prompts.py (13.1)                # Stores reusable LLM prompts/templates
-│   │   ├── memory/
-│   │   │   └── session_store.py (14)            # Stores user sessions and chat memory
-│   │   ├── graph/
-│   │   │   ├── models.py (9.1.1)                # Graph node and relationship models
-│   │   │   ├── neo4j_client.py (9.1.2)          # Neo4j database connection manager
-│   │   │   └── queries.py (9.1.3)               # Cypher queries for graph retrieval
-│   │   ├── workflows/
-│   │   │   ├── graph_rag_flow.py (7)            # End-to-end GraphRAG execution flow
-│   │   │   └── travel_workflow.py (6)           # Main travel planning workflow logic
-│   │   ├── agents/
-│   │   │   ├── planner_agent.py (10)            # AI agent for travel planning decisions
-│   │   │   ├── validator_agent.py (8)           # AI agent for validating recommendations
-│   │   │   ├── graph_agent.py (9.1)             # Agent handling Neo4j graph reasoning
-│   │   │   ├── rag_agent.py (9.2)               # Agent handling vector RAG retrieval
-│   │   │   └── orchestrator.py (5)              # Coordinates all agents and workflows
+│   │
+│   │   ├── main.py (1)
+│   │   │   # FastAPI application entrypoint, middleware, startup hooks
+│   │
+│   │   ├── config.py (1.1)
+│   │   │   # Central configuration management using Pydantic/BaseSettings
+│   │
 │   │   ├── utils/
-│   │   │   ├── logger.py (1.2)                  # Application logging utilities
-│   │   │   └── helpers.py (10.1)                # Common helper/utility functions
+│   │   │
+│   │   │   ├── logger.py (1.2)
+│   │   │   │   # Structured logging setup
+│   │   │
+│   │   │   └── helpers.py (1.3)
+│   │   │       # Shared helper utilities and reusable functions
+│   │
+│   │
 │   │   ├── observability/
-│   │   │   ├── metrics.py (1.3)                 # Prometheus/custom metrics collection
-│   │   ├── schemas/
-│   │   │   ├── travel.py (3)                    # Pydantic request/response schemas
-│   │   ├── retrieval/
-│   │   │   ├── vector_store.py (9.2.2)          # FAISS/vector database operations
-│   │   │   ├── retriever.py (9.2.1)             # Semantic document retrieval engine
-│   │   │   └── embeddings.py (9.2.3)            # Embedding generation utilities
+│   │   │
+│   │   │   └── metrics.py (1.4)
+│   │   │       # Prometheus/custom metrics, monitoring hooks
+│   │
+│   │
 │   │   ├── api/
-│   │   │   ├── routes_travel.py (2.2)           # Travel-related API endpoints
-│   │   │   └── routes_health.py (2.1)           # Health-check and monitoring APIs
-│   │   ├── caching/
-│   │   │   ├── cache.py (9.2.2.1)               # Redis/local caching layer
+│   │   │
+│   │   │   ├── routes_health.py (2.1)
+│   │   │   │   # Health check endpoints for monitoring/K8s probes
+│   │   │
+│   │   │   └── routes_travel.py (2.2)
+│   │   │       # Main travel assistant APIs
+│   │
+│   │
+│   │   ├── schemas/
+│   │   │
+│   │   │   └── travel.py (3)
+│   │   │       # Pydantic request/response schemas
+│   │
+│   │
 │   │   ├── services/
-│   │   │   ├── comparison_service.py (12)       # Flight comparison and ranking logic
-│   │   │   ├── travel_service.py (4)            # Core business logic for travel assistant
-│   │   │   ├── scoring_service.py (11)          # Flight scoring and recommendation engine
-│   │   │   └── validation_service.py (8.1)      # Rule-based validation service
-│   ├── .pytest_cache/                           # Pytest runtime cache files
-│   ├── tests/                                   # Automated unit/integration tests
-│   ├── .venv/                                   # Python virtual environment
+│   │   │
+│   │   │   ├── travel_service.py (4)
+│   │   │   │   # Main business logic layer
+│   │   │
+│   │   │   ├── validation_service.py (8.1)
+│   │   │   │   # Rule validation/business validation engine
+│   │   │
+│   │   │   ├── scoring_service.py (11)
+│   │   │   │   # Flight ranking and scoring calculations
+│   │   │
+│   │   │   └── comparison_service.py (12)
+│   │   │       # Multi-flight comparison engine
+│   │
+│   │
+│   │   ├── agents/
+│   │   │
+│   │   │   ├── orchestrator.py (5)
+│   │   │   │   # Central controller coordinating all agents/workflows
+│   │   │
+│   │   │   ├── planner_agent.py (6)
+│   │   │   │   # AI reasoning agent for itinerary planning
+│   │   │
+│   │   │   ├── validator_agent.py (7)
+│   │   │   │   # AI validation/checking agent
+│   │   │
+│   │   │   ├── graph_agent.py (9.1)
+│   │   │   │   # Neo4j graph traversal and relationship reasoning
+│   │   │
+│   │   │   └── rag_agent.py (9.2)
+│   │   │       # Semantic RAG retrieval agent
+│   │
+│   │
+│   │   ├── workflows/
+│   │   │
+│   │   │   ├── travel_workflow.py (6.1)
+│   │   │   │   # LangGraph workflow state transitions
+│   │   │
+│   │   │   └── graph_rag_flow.py (6.2)
+│   │   │       # Combined GraphRAG execution pipeline
+│   │
+│   │
+│   │   ├── graph/
+│   │   │
+│   │   │   ├── models.py (9.1.1)
+│   │   │   │   # Graph entities and relationship definitions
+│   │   │
+│   │   │   ├── neo4j_client.py (9.1.2)
+│   │   │   │   # Neo4j database connection/session management
+│   │   │
+│   │   │   └── queries.py (9.1.3)
+│   │   │       # Cypher queries for graph search/traversal
+│   │
+│   │
+│   │   ├── retrieval/
+│   │   │
+│   │   │   ├── retriever.py (9.2.1)
+│   │   │   │   # Semantic retrieval pipeline
+│   │   │
+│   │   │   ├── vector_store.py (9.2.2)
+│   │   │   │   # FAISS/vector DB storage and search
+│   │   │
+│   │   │   └── embeddings.py (9.2.3)
+│   │   │       # Embedding generation logic
+│   │
+│   │
+│   │   ├── caching/
+│   │   │
+│   │   │   └── cache.py (9.2.2.1)
+│   │   │       # Redis/local caching layer
+│   │
+│   │
+│   │   ├── llm/
+│   │   │
+│   │   │   ├── client.py (13)
+│   │   │   │   # OpenAI/LLM provider integration
+│   │   │
+│   │   │   ├── prompts.py (13.1)
+│   │   │   │   # Prompt templates/system prompts
+│   │   │
+│   │   │   └── output_parser.py (13.2)
+│   │   │       # Structured output parsing/Pydantic conversion
+│   │
+│   │
+│   │   ├── mocks/
+│   │   │
+│   │   │   ├── mock_llm.py (13.3)
+│   │   │   │   # Mock LLM responses for offline/local testing
+│   │   │
+│   │   │   └── mock_external_api.py (13.4)
+│   │   │       # Mock airline/travel external APIs
+│   │
+│   │
+│   │   ├── memory/
+│   │   │
+│   │   │   └── session_store.py (14)
+│   │   │       # User memory/session persistence
+│
+│
 │   ├── scripts/
-│   │   ├── ingest_graph.py                      # Loads JSON data into Neo4j graph
-│   │   └── run_demo_queries.py                  # Runs sample demo/travel queries
+│   │
+│   │   ├── ingest_graph.py
+│   │   │   # Load JSON datasets into Neo4j
+│   │
+│   │   └── run_demo_queries.py
+│   │       # Run sample GraphRAG queries locally
+│
+│
+│   ├── tests/
+│   │   # Unit tests and integration tests
+│
+│
 │   ├── data/
-│   │   ├── embeddings/
-│   │   │   ├── faiss_index/
-│   │   │   │   └── .gitkeep                     # Keeps empty FAISS folder in Git
+│   │
 │   │   ├── graph_data/
-│   │   │   ├── users.json                       # User preference graph seed data
-│   │   │   ├── flights.json                     # Flight graph dataset
-│   │   │   ├── routes.json                      # Airline route relationship data
-│   │   │   └── airports.json                    # Airport metadata and nodes
+│   │   │
+│   │   │   ├── users.json
+│   │   │   │   # User travel preferences
+│   │   │
+│   │   │   ├── flights.json
+│   │   │   │   # Flight dataset
+│   │   │
+│   │   │   ├── routes.json
+│   │   │   │   # Airline route mappings
+│   │   │
+│   │   │   └── airports.json
+│   │   │       # Airport metadata
+│   │
+│   │
 │   │   ├── api_mock/
-│   │   │   ├── users.json                       # Mock API user responses
-│   │   │   ├── flights.json                     # Mock API flight responses
-│   │   │   ├── routes.json                      # Mock API route responses
-│   │   │   └── airports.json                    # Mock API airport responses
+│   │   │
+│   │   │   ├── users.json
+│   │   │   ├── flights.json
+│   │   │   ├── routes.json
+│   │   │   └── airports.json
+│   │   │
+│   │   │   # Mock API payloads for local development
+│   │
+│   │
 │   │   ├── documents/
-│   │   │   ├── pricing_notes.txt                # Airline pricing and fare notes
-│   │   │   ├── airline_policies.txt             # Airline baggage/refund policies
-│   │   │   └── travel_rules.txt                 # Travel restrictions and rules
+│   │   │
+│   │   │   ├── pricing_notes.txt
+│   │   │   │   # Airline pricing rules
+│   │   │
+│   │   │   ├── airline_policies.txt
+│   │   │   │   # Refund/baggage/travel policies
+│   │   │
+│   │   │   └── travel_rules.txt
+│   │   │       # Travel restrictions and compliance rules
+│   │
+│   │
+│   │   └── embeddings/
+│   │       │
+│   │       └── faiss_index/
+│   │           │
+│   │           └── .gitkeep
+│   │               # Preserve empty FAISS directory in Git
+│
+│
+│   ├── .venv/
+│   │   # Local Python virtual environment
+│
+│   └── .pytest_cache/
+│       # Pytest cache files
 
 
 ```
