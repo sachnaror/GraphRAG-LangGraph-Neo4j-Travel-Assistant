@@ -1,0 +1,8 @@
+Pricing notes:
+
+Cheapest does not always mean best. The score should balance total fare, travel time, rating,
+and reliability. Dynamic pricing can increase prices on high-demand flights. A slightly more
+expensive flight may be better if it is faster, more reliable, or better rated.
+
+For price-sensitive users, highlight the lowest total fare and mention any tradeoff in time or
+comfort.

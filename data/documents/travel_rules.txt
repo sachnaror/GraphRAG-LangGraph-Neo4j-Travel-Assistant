@@ -1,0 +1,8 @@
+Travel rule guide:
+
+Business travelers should prioritize short duration, low cancellation risk, on-time performance,
+and refundable fares. Leisure travelers may prioritize lower prices and flexible timing.
+Family travelers should consider baggage allowance, seat availability, and predictable layovers.
+
+For urgent trips, direct routes and high reliability should score higher than price alone.
+For budget trips, total fare and cancellation penalties should be considered together.

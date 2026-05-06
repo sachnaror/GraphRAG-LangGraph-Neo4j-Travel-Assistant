@@ -1,0 +1,8 @@
+Airline policy notes:
+
+Refundable fares are preferred for business and uncertain travel. Economy seats usually include
+standard cabin baggage and check-in baggage, while business class may be chosen for comfort and
+availability. Flights with meals, WiFi, USB charging, and extra legroom can improve comfort scores.
+
+When comparing options, do not recommend a flight that fails required seat class or refundability
+constraints.
