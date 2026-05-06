@@ -96,15 +96,16 @@ API request
 
 ├── GraphRAG-LangGraph-Neo4j-Travel-Assistant/
 │
-│   ├── README.md                                # Complete architecture, setup guide, APIs, screenshots
+│   ├── README.md                                # Complete architecture, setup guide, APIs, FAISS workflow, screenshots
 │   ├── requirements.txt                         # Python dependencies
 │   ├── .env                                     # Real local secrets (never commit)
-│   ├── .env.example                             # Sample environment variables template
+│   ├── example.env                              # Sample environment variables template
+│   ├── .gitignore                               # Ignore secrets, caches, FAISS artifacts, virtual env
 │
 │   ├── app/
 │   │
 │   │   ├── main.py (1)                          # FastAPI application entrypoint, middleware, startup hooks
-│   │   ├── config.py (1.1)                      # Central configuration management using Pydantic/BaseSettings
+│   │   ├── config.py (1.1)                      # Central configuration loader, FAISS/docs/index env paths
 │   │
 │   │   ├── utils/
 │   │   │   ├── logger.py (1.2)                  # Structured logging setup
@@ -143,12 +144,27 @@ API request
 │   │   │   └── queries.py (9.1.3)               # Cypher queries for graph search/traversal
 │   │
 │   │   ├── retrieval/
-│   │   │   ├── retriever.py (9.2.1)             # Semantic retrieval pipeline with FAISS load/fallback
-│   │   │   ├── vector_store.py (9.2.2)          # FAISS index build, save, load, and search
+│   │   │   ├── retriever.py (9.2.1)             # Loads/searches FAISS index with fallback document retrieval
+│   │   │   ├── vector_store.py (9.2.2)          # FAISS index creation, persistence, loading, vector search
 │   │   │   └── embeddings.py (9.2.3)            # Embedding generation logic
 │   │
 │   │   ├── caching/
 │   │   │   └── cache.py (9.2.2.1)               # Redis/local caching layer
+│   │
+│   │   ├── data/
+│   │   │
+│   │   │   ├── documents/
+│   │   │   │   ├── pricing_notes.txt (9.2.3.1.1)# Airline pricing rules and fare notes
+│   │   │   │   ├── airline_policies.txt (9.2.3.1.2)# Refund, baggage, and airline policy rules
+│   │   │   │   └── travel_rules.txt (9.2.3.1.3)# Travel restrictions and compliance rules
+│   │   │
+│   │   │   ├── embeddings/
+│   │   │   │
+│   │   │   │   └── faiss_index/
+│   │   │   │       ├── index.faiss (9.2.4.1.1) # Persisted FAISS vector index for semantic retrieval
+│   │   │   │       ├── chunks.json (9.2.4.1.2) # Text chunks mapped to embeddings
+│   │   │   │       ├── manifest.json (9.2.4.1.3)# Metadata/version info for FAISS build
+│   │   │   │       └── .gitkeep (9.2.4.1.4)    # Preserve empty FAISS directory in Git
 │   │
 │   │   ├── llm/
 │   │   │   ├── client.py (13)                   # OpenAI/LLM provider integration
@@ -163,37 +179,29 @@ API request
 │   │   │   └── session_store.py (14)            # User memory/session persistence
 │
 │   ├── scripts/
-│   │   ├── ingest_graph.py                      # Load JSON datasets into Neo4j
-│   │   ├── build_faiss_index.py                 # Build/rebuild the persisted FAISS retrieval index
-│   │   └── run_demo_queries.py                  # Run sample GraphRAG demo queries
+│   │   ├── ingest_graph.py (15.1)               # Load JSON datasets into Neo4j
+│   │   ├── run_demo_queries.py (15.2)           # Run sample GraphRAG demo queries
+│   │   └── build_faiss_index.py (15.3)          # Build/rebuild FAISS index from documents
 │
-│   ├── tests/                                   # Unit and integration tests
-│   ├── .venv/                                   # Local Python virtual environment
-│   ├── .pytest_cache/                           # Pytest cache files
+│   ├── tests/
+│   │   └── test_retrieval.py (16)               # Tests FAISS retrieval and fallback indexing
 │
-│   ├── data/
+│   ├── external_data/
 │   │
 │   │   ├── graph_data/
-│   │   │   ├── users.json                       # User travel preference graph seed data
-│   │   │   ├── flights.json                     # Flight graph dataset
-│   │   │   ├── routes.json                      # Airline route relationship mappings
-│   │   │   └── airports.json                    # Airport metadata and nodes
+│   │   │   ├── users.json (17.1.1)              # User travel preference graph seed data
+│   │   │   ├── flights.json (17.1.2)            # Flight graph dataset
+│   │   │   ├── routes.json (17.1.3)             # Airline route relationship mappings
+│   │   │   └── airports.json (17.1.4)           # Airport metadata and graph nodes
 │   │
 │   │   ├── api_mock/
-│   │   │   ├── users.json                       # Mock API user responses
-│   │   │   ├── flights.json                     # Mock API flight responses
-│   │   │   ├── routes.json                      # Mock API route responses
-│   │   │   └── airports.json                    # Mock API airport responses
-│   │
-│   │   ├── documents/
-│   │   │   ├── pricing_notes.txt                # Airline pricing rules and fare notes
-│   │   │   ├── airline_policies.txt             # Refund, baggage, and airline policy rules
-│   │   │   └── travel_rules.txt                 # Travel restrictions and compliance rules
-│   │
-│   │   └── embeddings/
-│   │       └── faiss_index/
-│   │           └── .gitkeep                     # Preserve empty FAISS directory in Git
-
+│   │   │   ├── users.json (17.2.1)              # Mock API user responses
+│   │   │   ├── flights.json (17.2.2)            # Mock API flight responses
+│   │   │   ├── routes.json (17.2.3)             # Mock API route responses
+│   │   │   └── airports.json (17.2.4)           # Mock API airport responses
+│
+│   ├── .venv/                                   # Local Python virtual environment
+│   └── .pytest_cache/                           # Pytest cache files
 
 ```
 
