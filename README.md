@@ -61,51 +61,84 @@ API request
 ## Project Structure
 
 ```text
-.
-├── app
-│   ├── agents
-│   │   ├── graph_agent.py          # Builds direct and one-layover route options
-│   │   ├── planner_agent.py        # Enriches route options with user/context data
-│   │   ├── rag_agent.py            # Loads local policy/context snippets
-│   │   └── validator_agent.py      # Filters invalid route options
-│   ├── api
-│   │   ├── routes_health.py        # GET /health
-│   │   └── routes_travel.py        # POST /plan-trip
-│   ├── graph
-│   │   ├── models.py               # Typed graph domain models
-│   │   ├── neo4j_client.py         # Optional Neo4j query client
-│   │   └── queries.py              # Cypher route queries
-│   ├── llm
-│   │   ├── client.py               # OpenAI explanation client with mock fallback
-│   │   └── prompts.py              # Prompt builder for flight explanations
-│   ├── mocks
-│   │   ├── mock_external_api.py    # JSON-backed fallback data loader
-│   │   └── mock_llm.py             # Deterministic explanation generator
-│   ├── retrieval
-│   │   ├── embeddings.py           # Local hashing embeddings
-│   │   ├── retriever.py            # Document retriever
-│   │   └── vector_store.py         # In-memory vector store
-│   ├── schemas
-│   │   └── travel.py               # Pydantic response models
-│   ├── services
-│   │   ├── comparison_service.py   # Builds comparison table
-│   │   ├── scoring_service.py      # Scores/ranks options
-│   │   └── travel_service.py       # Main orchestration layer
-│   └── main.py                     # FastAPI application
-├── data
-│   ├── api_mock                    # Runtime fallback JSON data
-│   ├── documents                   # Local RAG policy/context documents
-│   ├── embeddings                  # Reserved for vector indexes
-│   └── graph_data                  # Data intended for graph ingestion
-├── scripts
-│   ├── ingest_graph.py             # Validate/dry-run/write graph data to Neo4j
-│   └── run_demo_queries.py         # Local demo runner
-├── tests
-│   ├── test_agents.py
-│   └── test_services.py
-├── example.env                     # Environment variable template
-├── requirements.txt
-└── README.md
+
+├── GraphRAG-LangGraph-Neo4j-Travel-Assistant/
+│   ├── example.env                              # Sample environment variables template
+│   ├── requirements.txt                         # Python package dependencies
+│   ├── README.md                                # Project documentation and setup guide
+│   ├── .env                                     # Actual local environment secrets/config
+│   ├── app/
+│   │   ├── config.py (1.1)                      # Central application configuration loader
+│   │   ├── main.py (1)                          # FastAPI application entry point
+│   │   ├── mocks/
+│   │   │   ├── mock_llm.py (13.3)               # Fake/mock LLM responses for local testing
+│   │   │   └── mock_external_api.py (9.1.4)    # Mock flight/travel external APIs
+│   │   ├── llm/
+│   │   │   ├── client.py (13)                   # OpenAI/LLM client integration layer
+│   │   │   ├── output_parser.py (13.2)          # Parses and structures LLM responses
+│   │   │   └── prompts.py (13.1)                # Stores reusable LLM prompts/templates
+│   │   ├── memory/
+│   │   │   └── session_store.py (14)            # Stores user sessions and chat memory
+│   │   ├── graph/
+│   │   │   ├── models.py (9.1.1)                # Graph node and relationship models
+│   │   │   ├── neo4j_client.py (9.1.2)          # Neo4j database connection manager
+│   │   │   └── queries.py (9.1.3)               # Cypher queries for graph retrieval
+│   │   ├── workflows/
+│   │   │   ├── graph_rag_flow.py (7)            # End-to-end GraphRAG execution flow
+│   │   │   └── travel_workflow.py (6)           # Main travel planning workflow logic
+│   │   ├── agents/
+│   │   │   ├── planner_agent.py (10)            # AI agent for travel planning decisions
+│   │   │   ├── validator_agent.py (8)           # AI agent for validating recommendations
+│   │   │   ├── graph_agent.py (9.1)             # Agent handling Neo4j graph reasoning
+│   │   │   ├── rag_agent.py (9.2)               # Agent handling vector RAG retrieval
+│   │   │   └── orchestrator.py (5)              # Coordinates all agents and workflows
+│   │   ├── utils/
+│   │   │   ├── logger.py (1.2)                  # Application logging utilities
+│   │   │   └── helpers.py (10.1)                # Common helper/utility functions
+│   │   ├── observability/
+│   │   │   ├── metrics.py (1.3)                 # Prometheus/custom metrics collection
+│   │   ├── schemas/
+│   │   │   ├── travel.py (3)                    # Pydantic request/response schemas
+│   │   ├── retrieval/
+│   │   │   ├── vector_store.py (9.2.2)          # FAISS/vector database operations
+│   │   │   ├── retriever.py (9.2.1)             # Semantic document retrieval engine
+│   │   │   └── embeddings.py (9.2.3)            # Embedding generation utilities
+│   │   ├── api/
+│   │   │   ├── routes_travel.py (2.2)           # Travel-related API endpoints
+│   │   │   └── routes_health.py (2.1)           # Health-check and monitoring APIs
+│   │   ├── caching/
+│   │   │   ├── cache.py (9.2.2.1)               # Redis/local caching layer
+│   │   ├── services/
+│   │   │   ├── comparison_service.py (12)       # Flight comparison and ranking logic
+│   │   │   ├── travel_service.py (4)            # Core business logic for travel assistant
+│   │   │   ├── scoring_service.py (11)          # Flight scoring and recommendation engine
+│   │   │   └── validation_service.py (8.1)      # Rule-based validation service
+│   ├── .pytest_cache/                           # Pytest runtime cache files
+│   ├── tests/                                   # Automated unit/integration tests
+│   ├── .venv/                                   # Python virtual environment
+│   ├── scripts/
+│   │   ├── ingest_graph.py                      # Loads JSON data into Neo4j graph
+│   │   └── run_demo_queries.py                  # Runs sample demo/travel queries
+│   ├── data/
+│   │   ├── embeddings/
+│   │   │   ├── faiss_index/
+│   │   │   │   └── .gitkeep                     # Keeps empty FAISS folder in Git
+│   │   ├── graph_data/
+│   │   │   ├── users.json                       # User preference graph seed data
+│   │   │   ├── flights.json                     # Flight graph dataset
+│   │   │   ├── routes.json                      # Airline route relationship data
+│   │   │   └── airports.json                    # Airport metadata and nodes
+│   │   ├── api_mock/
+│   │   │   ├── users.json                       # Mock API user responses
+│   │   │   ├── flights.json                     # Mock API flight responses
+│   │   │   ├── routes.json                      # Mock API route responses
+│   │   │   └── airports.json                    # Mock API airport responses
+│   │   ├── documents/
+│   │   │   ├── pricing_notes.txt                # Airline pricing and fare notes
+│   │   │   ├── airline_policies.txt             # Airline baggage/refund policies
+│   │   │   └── travel_rules.txt                 # Travel restrictions and rules
+
+
 ```
 
 ---
